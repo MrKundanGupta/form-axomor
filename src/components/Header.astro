@@ -1,0 +1,22 @@
+---
+import { Shield } from 'lucide-react';
+---
+
+<header class="bg-white border-b-4 border-[#003366] shadow-md">
+  <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <div class="h-16 w-12 flex items-center justify-center text-[#003366]">
+        {/* Using a generic emblem/shield to mimic the Ashoka pillar placement */}
+        <Shield size={48} strokeWidth={1.5} />
+      </div>
+      <div class="text-center md:text-left">
+        <h1 class="text-2xl font-bold text-[#003366] tracking-tight uppercase">Public Opinion Survey 2026</h1>
+        <h2 class="text-md font-semibold text-gray-600">জনমত জৰীপ ২০২৬ - 30 Hajo Sualkuchi Constituency (Assam)</h2>
+      </div>
+    </div>
+    <div class="mt-4 md:mt-0 text-sm text-gray-500 hidden md:block text-right">
+      <p>Secure Portal</p>
+      <p class="font-mono">{new Date().toLocaleDateString('en-IN')}</p>
+    </div>
+  </div>
+</header>

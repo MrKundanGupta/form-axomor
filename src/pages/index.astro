@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import VotingForm from '../components/VotingForm.jsx';
+---
+
+<Layout title="30 Hajo Sualkuchi Survey | Voting Portal">
+  <!-- Breadcrumb / Navigation Bar -->
+  <div class="bg-[#003366] text-white text-sm py-2 px-4 shadow-sm">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+      <div class="flex space-x-2">
+        <span>Home</span>
+        <span>&raquo;</span>
+        <span class="font-semibold text-[#FF9933]">Constituency Survey (30 Hajo Sualkuchi)</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <VotingForm client:load />
+  </main>
+</Layout>
