@@ -37,19 +37,19 @@ export default function VotingForm() {
         }
     ];
 
+    const handleSelectCandidate = (candidate) => {
+        if (isSubmitting) return;
 
-    const handleSubmitVote = (e) => {
-        e.preventDefault();
+        setSelectedCandidate(candidate);
+        setIsSubmitting(true);
         setError('');
 
-        if (!selectedCandidate) {
-            setError('Please select a candidate from the list.');
-            return;
-        }
-
-        setIsSubmitting(true);
         const normalizedBase = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
-        window.location.href = normalizedBase + '/results';
+        
+        // Brief timeout so the user sees the radio button get selected before redirecting
+        setTimeout(() => {
+            window.location.href = normalizedBase + '/results';
+        }, 150);
     };
 
     return (
@@ -63,7 +63,7 @@ export default function VotingForm() {
                     <ul className="list-disc pl-4 md:pl-5 space-y-1">
                         <li>This is an independent public opinion survey.</li>
                         <li>Your participation is anonymous and strictly confidential.</li>
-                        <li>Select your preferred party and click "Confirm & Submit".</li>
+                        <li>Select your preferred party to submit your opinion immediately.</li>
                     </ul>
                 </div>
             </div>
@@ -74,32 +74,25 @@ export default function VotingForm() {
                     <h3 className="text-md md:text-lg font-bold text-[#003366]">E-Ballot / ই-বেলেট</h3>
                 </div>
 
-                <div className="p-2 md:p-4 bg-gray-50">
+                <div className="p-2 md:p-4 bg-gray-50 relative">
+                    {/* Optional overlay while submitting for UX */}
+                    {isSubmitting && (
+                        <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center">
+                            <span className="font-bold text-[#003366] animate-pulse">Processing...</span>
+                        </div>
+                    )}
                     <CandidateCard
                         candidates={candidates}
                         selectedCandidate={selectedCandidate}
-                        setSelectedCandidate={setSelectedCandidate}
+                        setSelectedCandidate={handleSelectCandidate}
                     />
                 </div>
-
-                {/* Action Area — Submit Button */}
-                <div className="p-4 md:p-6 bg-white border-t border-gray-200">
-                    <form onSubmit={handleSubmitVote} className="flex flex-col items-center max-w-2xl mx-auto gap-4">
-
-                        {error && <p className="text-red-600 text-xs font-semibold animate-pulse">{error}</p>}
-
-                        <button
-                            type="submit"
-                            disabled={isSubmitting || !selectedCandidate}
-                            className={`w-full max-w-xs px-6 py-3 rounded-md font-bold text-white transition-all shadow-md flex items-center justify-center border
-                                ${isSubmitting || !selectedCandidate ? 'bg-gray-400 border-gray-400 cursor-not-allowed opacity-70' : 'bg-[#138808] hover:bg-[#0e6606] border-[#0e6606] hover:shadow-lg scale-100 active:scale-95'}
-                            `}
-                        >
-                            {isSubmitting ? 'Processing...' : 'Confirm & Submit'}
-                        </button>
-
-                    </form>
-                </div>
+                
+                {error && (
+                    <div className="p-4 bg-white border-t border-gray-200">
+                        <p className="text-red-600 text-xs font-semibold text-center">{error}</p>
+                    </div>
+                )}
             </div>
         </div>
     );
