@@ -1,10 +1,10 @@
 export const prerender = false;
 
 // A fixed starting date to calculate elapsed time.
-// Set to April 5, 2026 (midnight UTC).
-const START_DATE = new Date('2026-04-05T00:00:00Z').getTime();
-const START_VOTES = 60094;
-const MAX_VOTES = 124387;
+// Set to April 9, 2026 (midnight UTC).
+const START_DATE = new Date('2026-04-09T00:00:00Z').getTime();
+const START_VOTES = 159387;
+const MAX_VOTES = 164387;
 
 // Function to seeded random based on elapsed time to keep numbers consistent per min
 function getSeededRandom(seed) {
@@ -20,18 +20,18 @@ export const GET = async (context) => {
         const minutesElapsed = Math.max(0, (now - START_DATE) / (1000 * 60));
         const hoursElapsed = minutesElapsed / 60;
 
-        // Base votes added for full hours
-        const baseHourlyVotes = Math.floor(hoursElapsed) * 618;
+        // Base votes added for full hours (+204 per hour)
+        const baseHourlyVotes = Math.floor(hoursElapsed) * 204;
 
         // Additional random votes for the current fractional hour (based on minute)
         const hourSeed = Math.floor(hoursElapsed);
-        
-        // Random target votes to add by the end of this hour, between 189 and 618
-        const maxRandomThisHour = 189 + Math.floor(getSeededRandom(hourSeed) * (618 - 189));
-        
+
+        // Random target votes to add by the end of this hour, between 50 and 204
+        const maxRandomThisHour = 50 + Math.floor(getSeededRandom(hourSeed) * (204 - 50));
+
         // Progress within the hour (0 to <1)
         const minuteProgress = (minutesElapsed % 60) / 60;
-        
+
         // Add random votes proportional to the minute progress
         const currentMinuteVotes = Math.floor(minuteProgress * maxRandomThisHour);
 
@@ -42,24 +42,13 @@ export const GET = async (context) => {
             totalGeneratedVotes = MAX_VOTES;
         }
 
-        // Proportions: Randomized but fixed within a day
+        // Party vote shares: absolute ranges, randomized but fixed within a day
         const daySeed = Math.floor(now / (1000 * 60 * 60 * 24));
 
-        let incShare = 0.53 + (getSeededRandom(daySeed) * 0.03);      // 53% to 56%
-        let agpShare = 0.39 + (getSeededRandom(daySeed + 1) * 0.06);  // 39% to 45% (matches 'Min 45% Max 42%' request logically)
-        let aitcShare = 0.01 + (getSeededRandom(daySeed + 2) * 0.01); // 1% to 2%
-        let otherShare = 0.003 + (getSeededRandom(daySeed + 3) * 0.004); // 0.3% to 0.7%
-
-        // Normalize so all shares sum to exactly 1.0 (prevents >100% total due to overlapping ranges)
-        const totalShare = incShare + agpShare + aitcShare + otherShare;
-        const normIncShare = incShare / totalShare;
-        const normAgpShare = agpShare / totalShare;
-        const normAitcShare = aitcShare / totalShare;
-
-        const dummyINC = Math.floor(totalGeneratedVotes * normIncShare);
-        const dummyAGP = Math.floor(totalGeneratedVotes * normAgpShare);
-        const dummyAITC = Math.floor(totalGeneratedVotes * normAitcShare);
-        const dummyOther = Math.max(0, totalGeneratedVotes - dummyINC - dummyAGP - dummyAITC); // Whatever is left
+        const dummyINC = 90840 + Math.floor(getSeededRandom(daySeed) * (96000 - 90840));
+        const dummyAITC = 1371 + Math.floor(getSeededRandom(daySeed + 2) * (1529 - 1371));
+        const dummyOther = 2219 + Math.floor(getSeededRandom(daySeed + 3) * (2519 - 2219));
+        const dummyAGP = Math.max(0, totalGeneratedVotes - dummyINC - dummyAITC - dummyOther);
 
         const finalResults = [
             { id: 'inc', name: 'INC', votes: dummyINC, color: '#0055A4' },
